@@ -156,6 +156,60 @@
     </div>
 
     <div class="clearfix"></div>
+<div id="formulario-section">
+    <div class="container">
+        <div class="form-card">
+            <h2>Registro de Usuarios</h2>
+
+            <form id="registroForm">
+
+                <div class="form-group">
+                    <label>Nombre Completo:</label>
+                    <input type="text" id="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Edad:</label>
+                    <input type="number" id="edad" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Correo Electrónico:</label>
+                    <input type="email" id="correo" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Número Telefónico:</label>
+                    <input type="tel" id="telefono" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Comentarios:</label>
+                    <textarea id="comentarios" required></textarea>
+                </div>
+
+                <button id="btnEnviar" type="submit">Enviar</button>
+                <button id="verRegistrosBtn" type="button">Visualizar Registros</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<table id="tablaRegistros">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Edad</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Comentarios</th>
+        </tr>
+    </thead>
+    <tbody id="tablaBody"></tbody>
+</table>
+
+    <div class="clearfix"></div>
 
     <footer id="footer">
         <div class="container">
@@ -178,8 +232,9 @@
                     </a>
                 </li>
             </ul>
-        <div class="clearfix"></div>
         </div>
     </footer>
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/formulario.js"></script>
 </body>
 </html>
