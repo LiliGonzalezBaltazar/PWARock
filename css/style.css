@@ -258,3 +258,114 @@ body{
         float: none;
     }
 }
+
+/* ==========================
+   FORMULARIO DE REGISTRO
+   ========================== */
+#formulario-section {
+    margin-top: 60px;
+    margin-bottom: 40px;
+}
+
+.form-card {
+    width: 60%;
+    margin: 0 auto;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #111;
+    border-radius: 10px;
+    box-shadow: 0px 0px 8px #990000;
+}
+
+.form-card h2 {
+    font-size: 28px;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    color: white;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    background: black;
+    border: 1px solid #990000;
+    border-radius: 5px;
+    color: white;
+}
+
+.form-group textarea {
+    height: 100px;
+    resize: none;
+}
+
+#btnEnviar,
+#verRegistrosBtn {
+    background: #990000;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: 0.3s;
+}
+
+#btnEnviar:hover,
+#verRegistrosBtn:hover {
+    background: #c40000;
+}
+
+/* ==========================
+   TABLA DE REGISTROS
+   ========================== */
+#tablaRegistros {
+    width: 90%;
+    margin: 40px auto;
+    border-collapse: collapse;
+    display: none;
+}
+
+#tablaRegistros th {
+    background: #990000;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+#tablaRegistros td {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    color: white;
+}
+
+#tablaRegistros tr:nth-child(even) {
+    background: #222;
+}
+
+#tablaRegistros tr:hover {
+    background: #333;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .form-card {
+        width: 90%;
+    }
+}
+
+@media (max-width: 600px) {
+    #tablaRegistros {
+        font-size: 12px;
+    }
+}
