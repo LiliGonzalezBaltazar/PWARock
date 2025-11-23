@@ -187,15 +187,14 @@
                     <label>Comentarios:</label>
                     <textarea id="comentarios" required></textarea>
                 </div>
-
-                <button id="btnEnviar" type="submit">Enviar</button>
-                <button id="verRegistrosBtn" type="button">Visualizar Registros</button>
-
+                <button type="submit">Enviar</button>
+                <button type="button" id="verRegistros">Visualizar Registros</button>
             </form>
         </div>
     </div>
 </div>
 
+<h2>Registros Guardados</h2>
 <table id="tablaRegistros">
     <thead>
         <tr>
@@ -206,9 +205,9 @@
             <th>Comentarios</th>
         </tr>
     </thead>
-    <tbody id="tablaBody"></tbody>
+    <tbody id="tablaRegistrosBody"></tbody>
 </table>
-
+    
     <div class="clearfix"></div>
 
     <footer id="footer">
@@ -238,3 +237,4 @@
     <script type="module" src="js/formulario.js"></script>
 </body>
 </html>
+
