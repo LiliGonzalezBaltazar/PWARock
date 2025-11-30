@@ -85,17 +85,30 @@ self.addEventListener('activate', e => {
 });
 
 //Evento fetch
-self.addEventListener('fetch', e=>{
+// sw.js
+
+self.addEventListener('fetch', e => {
+    // 💥 NUEVA LÓGICA: Excluir peticiones de Firebase y API (Network Only)
+    // El método 'match' busca el patrón en la URL de la petición.
+    const url = e.request.url;
+
+    // Si la URL es de Firebase o de la API de Google, usa Network Only (no cachear)
+    if (url.includes('firestore.googleapis.com') || 
+        url.includes('firebase-firestore.googleapis.com') ||
+        url.includes('firebasejs') ) {
+        return e.respondWith(fetch(e.request));
+    }
+    
+    // Si NO es una petición de API, usa la estrategia Cache First para los archivos estáticos
     e.respondWith(
         caches.match(e.request)
         .then(res => {
-            if(res){
+            if (res) {
                 return res;
             }
             return fetch(e.request);
         })
     );
-
 });
 
 // Evento Push (Muestra la notificación recibida de FCM)
@@ -126,4 +139,5 @@ self.addEventListener('notificationclick', (event) => {
         clients.openWindow('/') 
     );
 });
+
 
