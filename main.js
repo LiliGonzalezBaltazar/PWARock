@@ -1,20 +1,20 @@
 //service worker
 
-if('serviceWorker' in navigator){
+if ('serviceWorker' in navigator) {
     console.log('Puedes usar los serviceWorker del navegador');
 
-    navigator.serviceWorker.register('./sw.js')
-        .then(res => console.log('serviceWorker cargado correctamente', res))
-        .catch(err => console.log('serviceWorker no se ha podido registrar', err))
-}else{
+    navigator.serviceWorker.register('/sw-custom/sw.js', {
+        scope: '/sw-custom/'
+    });
+} else {
     console.log('NO puedes usar los serviceWorker del navegador');
 }
 
 
 //scroll suavizado
-$(document).ready(function(){
+$(document).ready(function () {
 
-    $("#menu a").click(function(e){
+    $("#menu a").click(function (e) {
         e.preventDefault();
 
         $("html, body").animate({
