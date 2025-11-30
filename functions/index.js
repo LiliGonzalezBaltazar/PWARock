@@ -48,13 +48,19 @@ exports.notificarNuevoRegistro = onDocumentCreated('registros/{registroId}',
             }
         };
 
-        // 4. Enviar la notificación a todos los tokens
-        try {
-            await admin.messaging().sendToDevice(registrationTokens, payload);
-            console.log('Notificación enviada con éxito.');
-        } catch (error) {
-            console.error('Error al enviar la notificación:', error);
-        }
+// CÓDIGO CORREGIDO (Usando sendEachForDevice)
+try {
+    // 1. Usamos sendEachForDevice para enviar a la lista de tokens
+    const response = await admin.messaging().sendEachForDevice(registrationTokens, payload);
+    
+    // 2. Reportamos el resultado
+    console.log('Notificación enviada con éxito. Resultados:');
+    console.log(response.successCount + ' mensajes enviados con éxito.');
+    console.log(response.failureCount + ' mensajes fallidos.');
+    
+} catch (error) {
+    console.error('Error al enviar la notificación:', error);
+}
 
         return null;
     });
