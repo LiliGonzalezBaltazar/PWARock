@@ -18,7 +18,8 @@ async function notificarEnvio() {
 // Guardar Player ID de OneSignal
 async function guardarPlayerId() {
     // Revisar si hay Player ID
-    const playerId = OneSignal?.User?.PushSubscription?.id;
+    const playerId = await OneSignal.getUserId();
+    console.log(playerId);
     if (!playerId) {
         console.warn("No se encontró Player ID. El usuario puede no estar suscrito.");
         return;
