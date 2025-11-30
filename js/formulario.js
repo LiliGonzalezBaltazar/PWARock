@@ -1,12 +1,5 @@
-import { db, messaging } from "/js/firebase.js";
-import {
-    collection,
-    addDoc,
-    getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getToken } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
-
-const VAPID_KEY = "BJZNSD9DhU2M2oFjfuHxWC8Ihqni-WANm28vYOjzsB3lGBFmVplNLbuvV_Tn3BZ5fbGotiuuEjP3qLQi0JgGL00";
+import { db } from "/js/firebase.js";
+import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ✨ NUEVO — Función que llamará al backend de Vercel
 async function notificarEnvio() {
@@ -22,41 +15,34 @@ async function notificarEnvio() {
     .catch(err => console.error("Error en notificarEnvio:", err));
 }
 
-function subscribeToPush() {
-    Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-            console.log('Permiso de notificación concedido.');
-            
-            getToken(messaging, { vapidKey: VAPID_KEY })
-                .then(async (currentToken) => {
-                    if (currentToken) {
-                        console.log('Token de suscripción:', currentToken);
-                        await addDoc(collection(db, "tokens_suscripcion"), {
-                            token: currentToken
-                        });
-                        console.log('Token guardado en Firestore.');
-                    } else {
-                        console.log('No se obtuvo el token de suscripción.');
-                    }
-                })
-                .catch((err) => {
-                    console.error('Error', err);
-                });
-        } else {
-            console.log('Permiso de notificación denegado.');
-        }
-    });
+// Guardar Player ID de OneSignal
+async function guardarPlayerId() {
+    // Revisar si hay Player ID
+    const playerId = OneSignal?.User?.PushSubscription?.id;
+    if (!playerId) {
+        console.warn("No se encontró Player ID. El usuario puede no estar suscrito.");
+        return;
+    }
+
+    try {
+        await addDoc(collection(db, "tokens_suscripcion"), {
+            token: playerId
+        });
+        console.log("Player ID guardado en Firestore:", playerId);
+    } catch (error) {
+        console.error("Error guardando Player ID:", error);
+    }
 }
 
 $(document).ready(function() {
 
     const form = document.getElementById("registroForm");
-    const tablaRegistros = document.getElementById("tablaRegistros");
     const tablaBody = document.getElementById("tablaRegistrosBody");
     const verRegistrosBtn = document.getElementById("verRegistros");
 
-    subscribeToPush();
-    
+    // Guardar Player ID apenas cargue la página
+    guardarPlayerId();
+
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -68,7 +54,7 @@ $(document).ready(function() {
             const comentarios = document.getElementById("comentarios").value;
 
             try {
-                // Guardar datos
+                // Guardar datos del formulario
                 await addDoc(collection(db, "registros"), {
                     nombre,
                     edad,
@@ -77,10 +63,12 @@ $(document).ready(function() {
                     comentarios
                 });
 
-alert("Datos enviados correctamente.");
-await notificarEnvio();  // ← ENVÍA LA NOTIFICACIÓN
-form.reset();
+                alert("Datos enviados correctamente.");
 
+                // ✨ Enviar notificación
+                await notificarEnvio();
+
+                form.reset();
 
             } catch (error) {
                 console.error("Error al guardar:", error);
@@ -92,12 +80,11 @@ form.reset();
     if (verRegistrosBtn) { 
         verRegistrosBtn.addEventListener("click", async () => {
             tablaBody.innerHTML = "";
-            tablaRegistros.style.display = "block";
+            document.getElementById("tablaRegistros").style.display = "table";
 
             const querySnapshot = await getDocs(collection(db, "registros"));
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-
                 const row = `
                     <tr>
                         <td>${data.nombre}</td>
@@ -112,4 +99,3 @@ form.reset();
         });
     }
 });
-
