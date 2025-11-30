@@ -1,5 +1,3 @@
-console.log("SW-CUSTOM cargado en scope NO raíz — compatible con OneSignal");
-
 // CACHE PERSONAL (Opcional)
 const CACHE_NAME = "rock-cache-v3";
 const ASSETS = [
