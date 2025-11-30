@@ -1,5 +1,7 @@
-// Importar el SDK de Service Worker de Firebase Messaging.
-importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-sw.js');
+// sw.js (Línea 2 - CORREGIDA)
+// IMPORTANTE: Esta es la forma más compatible para importar el SDK del Service Worker.
+importScripts('https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.22.1/firebase-messaging-compat.js');
 
 // Configuración de Firebase (copiada de firebase.js)
 const firebaseConfig = {
@@ -124,3 +126,4 @@ self.addEventListener('notificationclick', (event) => {
         clients.openWindow('/') 
     );
 });
+
