@@ -19,7 +19,6 @@ async function notificarEnvio() {
 async function guardarPlayerId() {
     // Revisar si hay Player ID
     const playerId = OneSignal?.User?.PushSubscription?.id;
-    console.log(playerId);
     if (!playerId) {
         console.warn("No se encontró Player ID. El usuario puede no estar suscrito.");
         return;
@@ -100,4 +99,5 @@ $(document).ready(function() {
         });
     }
 });
+
 
