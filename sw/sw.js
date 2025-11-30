@@ -3,7 +3,7 @@ console.log("SW-CUSTOM cargado en scope NO raíz — compatible con OneSignal");
 // CACHE PERSONAL (Opcional)
 const CACHE_NAME = "rock-cache-v3";
 const ASSETS = [
-    "/sw-custom/",
+    "/sw/",
     "/css/styles.css",
     "/img/favicon-192.png",
     "/img/favicon-96.png",
@@ -34,7 +34,7 @@ self.addEventListener("activate", (event) => {
 
 // FETCH — solo maneja su propio scope
 self.addEventListener("fetch", (event) => {
-    if (!event.request.url.includes("/sw-custom/")) {
+    if (!event.request.url.includes("/sw/")) {
         return; // NO interceptar recursos globales
     }
 

@@ -3,8 +3,8 @@
 if ('serviceWorker' in navigator) {
     console.log('Puedes usar los serviceWorker del navegador');
 
-    navigator.serviceWorker.register('/sw-custom/sw.js', {
-        scope: '/sw-custom/'
+    navigator.serviceWorker.register('/sw/sw.js', {
+        scope: '/sw/'
     });
 } else {
     console.log('NO puedes usar los serviceWorker del navegador');
