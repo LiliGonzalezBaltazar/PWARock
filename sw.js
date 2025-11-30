@@ -100,22 +100,42 @@ self.addEventListener('fetch', e=>{
 
 // Evento Push (Muestra la notificación recibida de FCM)
 self.addEventListener('push', (event) => {
-    // Si la notificación no viene de Firebase o está vacía, evitamos errores.
-    if (event.data) {
-        // Extraemos el payload (título, cuerpo, etc.)
-        const data = event.data.json().notification;
+
+    // Intentar identificar si el push viene de OneSignal
+    try {
+        const raw = event.data?.text() || "";
         
-        const title = data.title || '¡Nueva Alerta!';
+        // Si detectamos payload de OneSignal → NO LO MANEJAMOS
+        if (raw.includes('onesignal') || raw.includes('notification')) {
+            return; // OneSignal manejará su propia notificación
+        }
+
+    } catch (e) {
+        return; // salir sin romper nada
+    }
+
+    // ---- NOTIFICACIONES PROPIAS ----
+    if (event.data) {
+        let payload = {};
+
+        try {
+            payload = event.data.json().notification || {};
+        } catch (e) {
+            payload = {};
+        }
+
+        const title = payload.title || '¡Nueva Alerta!';
         const options = {
-            body: data.body || 'Entérate de las novedades del Rock.',
-            icon: '/img/favicon-192.png', // Debe existir en tu proyecto
+            body: payload.body || 'Entérate de las novedades del Rock.',
+            icon: '/img/favicon-192.png',
             badge: '/img/favicon-96.png'
-            };
+        };
 
         event.waitUntil(
             self.registration.showNotification(title, options)
         );
     }
+
 });
 // Evento Click (Maneja la acción cuando el usuario hace click en la notificación)
 self.addEventListener('notificationclick', (event) => {
