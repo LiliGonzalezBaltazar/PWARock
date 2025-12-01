@@ -11,11 +11,15 @@ const FILES_TO_CACHE = [
     "/img/favicon-512.png"
 ];
 
+const ONESIGNAL_IGNORE = [
+    "/OneSignalSDKWorker.js",
+    "/OneSignalSDKUpdaterWorker.js",
+    "https://cdn.onesignal.com"
+];
+
 self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(FILES_TO_CACHE);
-        })
+        caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
     );
     self.skipWaiting();
 });
@@ -32,11 +36,15 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+
+    const url = event.request.url;
+    if (ONESIGNAL_IGNORE.some(path => url.includes(path))) {
+        return;
+    }
+
     event.respondWith(
-        caches.match(event.request)
-            .then(cacheResponse => {
-                if (cacheResponse) return cacheResponse;
-                return fetch(event.request);
-            })
+        caches.match(event.request).then(resp =>
+            resp || fetch(event.request)
+        )
     );
 });
