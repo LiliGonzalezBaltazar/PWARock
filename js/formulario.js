@@ -1,48 +1,67 @@
 import { db } from "/js/firebase.js";
 import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ✨ NUEVO — Función que llamará al backend de Vercel
+/* --------------------------------------------------
+   ENVÍO DE NOTIFICACIÓN A TU BACKEND EN VERCEL
+-------------------------------------------------- */
 async function notificarEnvio() {
-    await fetch("/api/notificar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            mensaje: "📩 ¡Nuevo formulario enviado!",
-        })
-    })
-    .then(res => res.json())
-    .then(data => console.log("Respuesta servidor:", data))
-    .catch(err => console.error("Error en notificarEnvio:", err));
-}
-
-// Guardar Player ID de OneSignal
-async function guardarPlayerId() {
-    // Revisar si hay Player ID
-    const playerId = OneSignal?.User?.PushSubscription?.id;
-    if (!playerId) {
-        console.warn("No se encontró Player ID. El usuario puede no estar suscrito.");
-        return;
-    }
-
     try {
-        await addDoc(collection(db, "tokens_suscripcion"), {
-            token: playerId
+        const res = await fetch("/api/notificar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mensaje: "📩 ¡Nuevo formulario enviado!" })
         });
-        console.log("Player ID guardado en Firestore:", playerId);
-    } catch (error) {
-        console.error("Error guardando Player ID:", error);
+
+        const data = await res.json();
+        console.log("Respuesta servidor:", data);
+    } catch (err) {
+        console.error("Error en notificarEnvio:", err);
     }
 }
 
-$(document).ready(function() {
+/* --------------------------------------------------
+   GUARDAR PLAYER ID CORRECTAMENTE
+   (cuando OneSignal realmente esté listo)
+-------------------------------------------------- */
+OneSignalDeferred.push(async function(OneSignal) {
+
+    console.log("Esperando evento de OneSignal...");
+
+    // Detecta cuando cambia la suscripción (cuando se genera el Player ID)
+    OneSignal.User.PushSubscription.addEventListener("change", async () => {
+
+        const playerId = OneSignal.User.PushSubscription.id;
+
+        if (playerId) {
+            console.log("🔥 Player ID listo:", playerId);
+
+            try {
+                await addDoc(collection(db, "tokens_suscripcion"), {
+                    token: playerId
+                });
+
+                console.log("Player ID guardado en Firestore:", playerId);
+            } catch (error) {
+                console.error("Error guardando Player ID:", error);
+            }
+        }
+    });
+
+});
+
+/* --------------------------------------------------
+   LÓGICA DEL FORMULARIO
+-------------------------------------------------- */
+
+$(document).ready(function () {
 
     const form = document.getElementById("registroForm");
     const tablaBody = document.getElementById("tablaRegistrosBody");
     const verRegistrosBtn = document.getElementById("verRegistros");
 
-    // Guardar Player ID apenas cargue la página
-    guardarPlayerId();
-
+    /* ------------------------------
+        ENVIAR FORMULARIO
+    ------------------------------ */
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -65,7 +84,7 @@ $(document).ready(function() {
 
                 alert("Datos enviados correctamente.");
 
-                // ✨ Enviar notificación
+                // Enviar notificación
                 await notificarEnvio();
 
                 form.reset();
@@ -77,14 +96,19 @@ $(document).ready(function() {
         });
     }
 
-    if (verRegistrosBtn) { 
+    /* ------------------------------
+        MOSTRAR REGISTROS
+    ------------------------------ */
+    if (verRegistrosBtn) {
         verRegistrosBtn.addEventListener("click", async () => {
+
             tablaBody.innerHTML = "";
             document.getElementById("tablaRegistros").style.display = "table";
 
             const querySnapshot = await getDocs(collection(db, "registros"));
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
+
                 const row = `
                     <tr>
                         <td>${data.nombre}</td>
@@ -94,10 +118,9 @@ $(document).ready(function() {
                         <td>${data.comentarios}</td>
                     </tr>
                 `;
+
                 tablaBody.innerHTML += row;
             });
         });
     }
 });
-
-
